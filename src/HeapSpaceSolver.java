@@ -1,10 +1,10 @@
 import java.util.Objects;
 
-public class Coordinate {
+public class HeapSpaceSolver {
     int x;
     int y;
 
-    public Coordinate(int x, int y) {
+    public HeapSpaceSolver(int x, int y) {
         this.x = x;
         this.y = y;
     }
@@ -13,7 +13,7 @@ public class Coordinate {
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
-        Coordinate other = (Coordinate) obj;
+        HeapSpaceSolver other = (HeapSpaceSolver) obj;
         return x == other.x && y == other.y;
     }
 
