@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        MazeFileHandler fileHandler = new MazeFileHandler("./maze");
+        MazeFileHandler fileHandler = new MazeFileHandler("./puzzle");
         Path mazeFile = fileHandler.getRandomMazeFile();
 
         if (mazeFile != null) {
