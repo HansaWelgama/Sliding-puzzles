@@ -1,4 +1,4 @@
-class MapData {
+public class MapData {
     private int width;
     private int height;
     private char[][] grid;

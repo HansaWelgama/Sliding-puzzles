@@ -1,30 +1,52 @@
 import java.util.*;
 
-class IcePuzzleSolver {
+class Coordinate {
+    int x;
+    int y;
 
+    public Coordinate(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Coordinate other = (Coordinate) obj;
+        return x == other.x && y == other.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
+}
+
+public class IcePuzzleSolver {
     public static void findAndPrintShortestPath(MapData map) {
-        int[] start = map.getStart();
-        int[] finish = map.getFinish();
+        Coordinate start = new Coordinate(map.getStart()[0], map.getStart()[1]);
+        Coordinate finish = new Coordinate(map.getFinish()[0], map.getFinish()[1]);
         char[][] grid = map.getGrid();
         int width = map.getWidth();
         int height = map.getHeight();
 
-        Queue<int[]> queue = new LinkedList<>();
+        Queue<Coordinate> queue = new LinkedList<>();
         queue.add(start);
 
-        Map<int[], int[]> parentMap = new HashMap<>();
+        Map<Coordinate, Coordinate> parentMap = new HashMap<>();
         parentMap.put(start, null);
 
         int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // Possible movements: up, down, left, right
 
-        List<int[]> validPath = new ArrayList<>(); // Store the valid path
+        List<Coordinate> validPath = new ArrayList<>(); // Store the valid path
 
         while (!queue.isEmpty()) {
-            int[] current = queue.poll();
-            if (Arrays.equals(current, finish)) {
+            Coordinate current = queue.poll();
+            if (current.equals(finish)) {
                 // If the finish square is found, reconstruct the path and store it
                 validPath.add(current);
-                int[] temp = current;
+                Coordinate temp = current;
                 while (parentMap.get(temp) != null) {
                     temp = parentMap.get(temp);
                     validPath.add(temp);
@@ -33,9 +55,9 @@ class IcePuzzleSolver {
             }
 
             for (int[] direction : directions) {
-                int newX = current[0] + direction[0];
-                int newY = current[1] + direction[1];
-                int[] next = {newX, newY};
+                int newX = current.x + direction[0];
+                int newY = current.y + direction[1];
+                Coordinate next = new Coordinate(newX, newY);
 
                 if (isValidMove(next, grid, width, height) && !parentMap.containsKey(next)) {
                     queue.add(next);
@@ -46,16 +68,16 @@ class IcePuzzleSolver {
 
         // If a valid path is found, print it
         if (!validPath.isEmpty()) {
-            printPath(validPath, start, finish);
+            printPath(validPath, start, finish, parentMap);
         } else {
             // If no valid path is found, print "No path found."
             System.out.println("No path found.");
         }
     }
 
-    private static boolean isValidMove(int[] cell, char[][] grid, int width, int height) {
-        int x = cell[0];
-        int y = cell[1];
+    private static boolean isValidMove(Coordinate cell, char[][] grid, int width, int height) {
+        int x = cell.x;
+        int y = cell.y;
 
         // Check if the cell is within the grid boundaries
         if (x < 0 || x >= height || y < 0 || y >= width) {
@@ -71,29 +93,30 @@ class IcePuzzleSolver {
         return true;
     }
 
-    private static void printPath(List<int[]> path, int[] start, int[] finish) {
+    private static void printPath(List<Coordinate> validPath, Coordinate start, Coordinate finish, Map<Coordinate, Coordinate> parentMap) {
         System.out.println();
-        for (int i = path.size() - 1; i >= 0; i--) { // Start from the second to last element
-            int[] current = path.get(i);
+        for (int i = validPath.size() - 1; i >= 0; i--) {
+            Coordinate current = validPath.get(i);
             String action;
-            if (i == path.size()-1) {
+            if (current.equals(start)) {
                 action = "Start at";
             } else {
-                action = "Move " + getDirection(path.get(i), path.get(i + 1));
+                action = "Move " + getDirection(parentMap.get(current), current);
             }
-            System.out.println((path.size() - i) + ". " + action + " to (" + current[0] + "," + current[1] + ")");
+            System.out.println((validPath.size() - i) + ". " + action + " to (" + current.x + "," + current.y + ")");
         }
-
         System.out.println("done!");
     }
 
-
-
-    private static String getDirection(int[] prev, int[] current) {
-        if (current[0] > prev[0]) return "down";
-        if (current[0] < prev[0]) return "up";
-        if (current[1] > prev[1]) return "right";
-        if (current[1] < prev[1]) return "left";
-        return"";
+    private static String getDirection(Coordinate prev, Coordinate current) {
+        if (prev == null) {
+            // If prev is null, assume a default direction, for example, "up".
+            return "up";
+        }
+        if (current.x > prev.x) return "down";
+        if (current.x < prev.x) return "up";
+        if (current.y > prev.y) return "right";
+        if (current.y < prev.y) return "left";
+        return "";
     }
 }
