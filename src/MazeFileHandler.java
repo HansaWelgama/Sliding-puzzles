@@ -14,7 +14,6 @@ public class MazeFileHandler {
         this.mazeDirectory = mazeDirectory;
     }
 
-    // Method to list all maze files in the directory
     public List<Path> listMazeFiles() {
         List<Path> mazeFiles = new ArrayList<>();
         Path directory = Paths.get(mazeDirectory);
@@ -30,13 +29,12 @@ public class MazeFileHandler {
         return mazeFiles;
     }
 
-    // Method to randomly select a maze file from the directory
     public Path getRandomMazeFile() {
         List<Path> mazeFiles = listMazeFiles();
         if (!mazeFiles.isEmpty()) {
             Random random = new Random();
             return mazeFiles.get(random.nextInt(mazeFiles.size()));
         }
-        return null; // Return null if no maze files found
+        return null;
     }
 }

@@ -50,27 +50,19 @@ public class MapData {
             throw new IllegalArgumentException("Empty maze file.");
         }
 
-        // Find the maximum length among all lines
         int maxWidth = lines.stream().mapToInt(String::length).max().orElse(0);
-
-        // Pad or truncate each line to match the maximum length
         List<String> paddedLines = new ArrayList<>();
         for (String line : lines) {
             if (line.length() < maxWidth) {
-                // Pad with spaces if the line is shorter than the maximum length
                 paddedLines.add(String.format("%-" + maxWidth + "s", line));
             } else if (line.length() > maxWidth) {
-                // Truncate if the line is longer than the maximum length
                 paddedLines.add(line.substring(0, maxWidth));
             } else {
                 paddedLines.add(line);
             }
         }
-
-        // Update the original lines list with the padded/truncated lines
         lines = paddedLines;
 
-        // Validate that all lines have the same length
         int width = lines.get(0).length();
         for (String line : lines) {
             if (line.length() != width) {

@@ -1,103 +1,39 @@
 import java.util.*;
+
 public class PuzzleSolver {
     public static void findAndPrintShortestPath(MapData map) {
-        HeapSpaceSolver start = new HeapSpaceSolver(map.getStart()[0], map.getStart()[1]);
-        HeapSpaceSolver finish = new HeapSpaceSolver(map.getFinish()[0], map.getFinish()[1]);
         char[][] grid = map.getGrid();
-        int width = map.getWidth();
-        int height = map.getHeight();
+        int[] start = map.getStart();
+        int[] finish = map.getFinish();
 
-        Queue<HeapSpaceSolver> queue = new LinkedList<>();
-        queue.add(start);
+        AStarAlgorithm astar = new AStarAlgorithm(grid, start, finish);
+        List<HeapSpaceSolver> path = astar.findPath();
 
-        Map<HeapSpaceSolver, HeapSpaceSolver> parentMap = new HashMap<>();
-        parentMap.put(start, null);
-
-        int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // Possible movements: up, down, left, right
-
-        List<HeapSpaceSolver> validPath = new ArrayList<>(); // Store the valid path
-
-        while (!queue.isEmpty()) {
-            HeapSpaceSolver current = queue.poll();
-            if (current.equals(finish)) {
-                // If the finish square is found, reconstruct the path and store it
-                validPath.add(current);
-                HeapSpaceSolver temp = current;
-                while (parentMap.get(temp) != null) {
-                    temp = parentMap.get(temp);
-                    validPath.add(temp);
-                }
-                break; // Exit the loop as we found the finish square
-            }
-
-            for (int[] direction : directions) {
-                int newX = current.x + direction[0];
-                int newY = current.y + direction[1];
-                HeapSpaceSolver next = new HeapSpaceSolver(newX, newY);
-
-                if (isValidMove(next, grid, width, height) && !parentMap.containsKey(next)) {
-                    queue.add(next);
-                    parentMap.put(next, current);
-                }
-            }
-        }
-
-        // If a valid path is found, print it
-        if (!validPath.isEmpty()) {
-            String path = printPath(validPath, start, finish, parentMap);
-            System.out.println(path);
+        if (path != null) {
+            String pathString = printPath(path, start, finish);
+            System.out.println(pathString);
         } else {
-            // If no valid path is found, print "No path found."
             System.out.println("No path found.");
         }
     }
 
-    private static String printPath(List<HeapSpaceSolver> validPath, HeapSpaceSolver start, HeapSpaceSolver finish, Map<HeapSpaceSolver, HeapSpaceSolver> parentMap) {
+    private static String printPath(List<HeapSpaceSolver> path, int[] start, int[] finish) {
         StringBuilder pathBuilder = new StringBuilder();
 
-        for (int i = validPath.size() - 1; i >= 0; i--) {
-            HeapSpaceSolver current = validPath.get(i);
+        for (int i = 0; i < path.size(); i++) {
+            HeapSpaceSolver node = path.get(i);
             String action;
-            if (current.equals(start)) {
+            if (i == 0) {
                 action = "Start at";
+            } else if (i == path.size() - 1) {
+                action = "Finish at";
             } else {
-                action = "Move " + getDirection(parentMap.get(current), current);
+                action = "Move";
             }
-            // Add 1 to current.x and current.y
-            pathBuilder.append((validPath.size() - i) + ". " + action + " to (" + (current.y + 1) + "," + (current.x + 1) + ")\n");
+            pathBuilder.append((i + 1) + ". " + action + " to (" + (node.y + 1) + "," + (node.x + 1) + ")\n");
         }
         pathBuilder.append("Done!");
 
         return pathBuilder.toString();
-    }
-
-    private static boolean isValidMove(HeapSpaceSolver cell, char[][] grid, int width, int height) {
-        int x = cell.x;
-        int y = cell.y;
-
-        // Check if the cell is within the grid boundaries
-        if (x < 0 || x >= height || y < 0 || y >= width) {
-            return false; // Cell is out of bounds
-        }
-
-        // Check if the cell is an obstacle
-        if (grid[x][y] == '0') {
-            return false; // Cell is an obstacle
-        }
-
-        // Allow movement through empty spaces ('.'), start ('S'), and finish ('F') positions
-        return true;
-    }
-
-    private static String getDirection(HeapSpaceSolver prev, HeapSpaceSolver current) {
-        if (prev == null) {
-            // If prev is null, assume a default direction, for example, "up".
-            return "up";
-        }
-        if (current.x > prev.x) return "down";
-        if (current.x < prev.x) return "up";
-        if (current.y > prev.y) return "right";
-        if (current.y < prev.y) return "left";
-        return "";
     }
 }
