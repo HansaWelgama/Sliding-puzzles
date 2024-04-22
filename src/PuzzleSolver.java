@@ -44,11 +44,31 @@ public class PuzzleSolver {
 
         // If a valid path is found, print it
         if (!validPath.isEmpty()) {
-            printPath(validPath, start, finish, parentMap);
+            String path = printPath(validPath, start, finish, parentMap);
+            System.out.println(path);
         } else {
             // If no valid path is found, print "No path found."
             System.out.println("No path found.");
         }
+    }
+
+    private static String printPath(List<HeapSpaceSolver> validPath, HeapSpaceSolver start, HeapSpaceSolver finish, Map<HeapSpaceSolver, HeapSpaceSolver> parentMap) {
+        StringBuilder pathBuilder = new StringBuilder();
+
+        for (int i = validPath.size() - 1; i >= 0; i--) {
+            HeapSpaceSolver current = validPath.get(i);
+            String action;
+            if (current.equals(start)) {
+                action = "Start at";
+            } else {
+                action = "Move " + getDirection(parentMap.get(current), current);
+            }
+            // Add 1 to current.x and current.y
+            pathBuilder.append((validPath.size() - i) + ". " + action + " to (" + (current.y + 1) + "," + (current.x + 1) + ")\n");
+        }
+        pathBuilder.append("Done!");
+
+        return pathBuilder.toString();
     }
 
     private static boolean isValidMove(HeapSpaceSolver cell, char[][] grid, int width, int height) {
@@ -67,21 +87,6 @@ public class PuzzleSolver {
 
         // Allow movement through empty spaces ('.'), start ('S'), and finish ('F') positions
         return true;
-    }
-
-    private static void printPath(List<HeapSpaceSolver> validPath, HeapSpaceSolver start, HeapSpaceSolver finish, Map<HeapSpaceSolver, HeapSpaceSolver> parentMap) {
-        System.out.println();
-        for (int i = validPath.size() - 1; i >= 0; i--) {
-            HeapSpaceSolver current = validPath.get(i);
-            String action;
-            if (current.equals(start)) {
-                action = "Start at";
-            } else {
-                action = "Move " + getDirection(parentMap.get(current), current);
-            }
-            System.out.println((validPath.size() - i) + ". " + action + " to (" + current.x + "," + current.y + ")");
-        }
-        System.out.println("done!");
     }
 
     private static String getDirection(HeapSpaceSolver prev, HeapSpaceSolver current) {

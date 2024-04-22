@@ -3,14 +3,15 @@ import java.nio.file.Path;
 
 public class Main {
     public static void main(String[] args) {
-        MazeFileHandler fileHandler = new MazeFileHandler("./puzzle");
+
+        MazeFileHandler fileHandler = new MazeFileHandler("./maze");
         Path mazeFile = fileHandler.getRandomMazeFile();
 
         if (mazeFile != null) {
             try {
                 MapData map = MapData.parseMazeFile(mazeFile);
-                System.out.println("Start Location: (" + map.getStart()[0] + ", " + map.getStart()[1] + ")");
-                System.out.println("Finish Location: (" + map.getFinish()[0] + ", " + map.getFinish()[1] + ")");
+                System.out.println("Start Location: (" + (map.getStart()[1]+1) + ", " + (map.getStart()[0]+1) + ")");
+                System.out.println("Finish Location: (" + (map.getFinish()[1]+1) + ", " + (map.getFinish()[0]+1) + ")");
                 System.out.println("Map Contents:");
                 for (int i = 0; i < map.getHeight(); i++) {
                     for (int j = 0; j < map.getWidth(); j++) {

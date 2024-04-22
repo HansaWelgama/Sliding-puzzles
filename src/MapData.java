@@ -5,13 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapData {
-
     private int width;
     private int height;
     private char[][] grid;
     private int[] start; // Location of the start square
     private int[] finish; // Location of the finish square
-
 
     public MapData(int width, int height, char[][] grid, int[] start, int[] finish) {
         this.width = width;
@@ -44,6 +42,7 @@ public class MapData {
     public int[] getFinish() {
         return finish;
     }
+
     public static MapData parseMazeFile(Path mazeFile) throws IOException {
         List<String> lines = Files.readAllLines(mazeFile);
         int height = lines.size();
@@ -100,5 +99,4 @@ public class MapData {
 
         return new MapData(width, height, grid, start, finish);
     }
-
 }

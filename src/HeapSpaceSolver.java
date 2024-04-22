@@ -1,8 +1,9 @@
 import java.util.Objects;
 
-public class HeapSpaceSolver {
-    int x;
-    int y;
+class HeapSpaceSolver {
+    public int x;
+    public int y;
+
 
     public HeapSpaceSolver(int x, int y) {
         this.x = x;
@@ -10,11 +11,11 @@ public class HeapSpaceSolver {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        HeapSpaceSolver other = (HeapSpaceSolver) obj;
-        return x == other.x && y == other.y;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HeapSpaceSolver that = (HeapSpaceSolver) o;
+        return x == that.x && y == that.y;
     }
 
     @Override
